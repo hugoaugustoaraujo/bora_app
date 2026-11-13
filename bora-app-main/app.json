@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "bora",
+    "slug": "bora",
+    "version": "1.0.0",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.anonymous.bora",
+      "usesCleartextTraffic": true
+    },
+    "plugins": [
+      "expo-router",
+      "@react-native-community/datetimepicker",
+      "expo-build-properties",
+      "expo-font",
+      "expo-splash-screen",
+      "expo-status-bar",
+      "expo-web-browser"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "49b89d8f-a135-42da-bbf2-da528fe96192"
+      }
+    },
+    "owner": "hugoaugusto"
+  }
+}
