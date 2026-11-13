@@ -1,0 +1,8 @@
+{
+  "name": "Hugo Teste",
+  "username": "hugoteste",
+  "email": "hugoteste@email.com",
+  "password_hash": "12345678",
+  "location_name": "Maceió, AL",
+  "birth_date": "2002-12-17"
+}
