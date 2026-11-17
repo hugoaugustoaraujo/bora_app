@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # 1. Serviço do Banco de Dados PostgreSQL + PostGIS
+  postgres-db:
+    image: postgis/postgis:15-3.3
+    container_name: bora_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app-bora
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - bora-net
+
+  # 2. Serviço da API Backend (Node.js / Express)
+  backend:
+    build: ./bora-backend
+    container_name: bora_backend_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=app-bora
+    depends_on:
+      - postgres-db
+    networks:
+      - bora-net
+
+  # 3. Executor Automatizado de Testes do Backend (Integração e Unitários)
+  test-runner:
+    build: ./bora-backend
+    container_name: bora_test_runner
+    depends_on:
+      - postgres-db
+    environment:
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=app-bora
+    command: npm test
+    networks:
+      - bora-net
+
+  # 4. Executor Automatizado de Testes do Frontend (Expo / Jest)
+  frontend-test-runner:
+    image: node:18-alpine
+    container_name: bora_frontend_tests
+    working_dir: /usr/src/app
+    volumes:
+      - ./bora-app-main:/usr/src/app
+    command: sh -c "npm install && npm test"
+    networks:
+      - bora-net
+
+volumes:
+  pgdata:
+
+networks:
+  bora-net:
+    driver: bridge
