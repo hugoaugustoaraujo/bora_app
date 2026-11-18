@@ -5,6 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "test": "jest",
     "start": "node dist/server.ts"
   },
   "dependencies": {
