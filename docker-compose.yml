@@ -11,6 +11,13 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      # Mapeia a sua pasta de migrações SQL para a inicialização automática do Postgres:
+      - ./bora-backend/src/database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app-bora"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - bora-net
 
@@ -29,7 +36,8 @@ services:
       - DB_PASSWORD=postgres
       - DB_NAME=app-bora
     depends_on:
-      - postgres-db
+      postgres-db:
+        condition: service_healthy
     networks:
       - bora-net
 
@@ -38,7 +46,8 @@ services:
     build: ./bora-backend
     container_name: bora_test_runner
     depends_on:
-      - postgres-db
+      postgres-db:
+        condition: service_healthy
     environment:
       - DB_HOST=postgres-db
       - DB_PORT=5432
@@ -51,7 +60,7 @@ services:
 
   # 4. Executor Automatizado de Testes do Frontend (Expo / Jest)
   frontend-test-runner:
-    image: node:18-alpine
+    image: node:20-alpine
     container_name: bora_frontend_tests
     working_dir: /usr/src/app
     volumes:
