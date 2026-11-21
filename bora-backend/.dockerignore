@@ -1,0 +1,8 @@
+# O node_modules é instalado dentro da imagem pelo próprio Dockerfile.
+# Copiar o da máquina local quebra binários (ex.: jest) e infla o build.
+node_modules
+npm-debug.log*
+.env
+dist
+coverage
+images/avatar-*
