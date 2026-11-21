@@ -49,19 +49,6 @@ CREATE TABLE IF NOT EXISTS friendships (
   UNIQUE(user_id, friend_id)
 );
 
--- Tabela de Notificações
-CREATE TABLE IF NOT EXISTS notifications (
-  id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(id) ON DELETE CASCADE,
-  actor_id INT REFERENCES users(id) ON DELETE CASCADE, -- Quem realizou a ação
-  type VARCHAR(50) NOT NULL, -- 'chat_message', 'match_created_friend', 'match_joined_friend'
-  reference_id INT, -- ID da partida ou relação relevante
-  message_id INT REFERENCES messages(id) ON DELETE CASCADE, -- Opcional, para notificações de chat
-  notification_text TEXT NOT NULL,
-  is_read BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE IF NOT EXISTS user_sports (
   id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -98,6 +85,19 @@ CREATE TABLE IF NOT EXISTS messages (
   receiver_id INT REFERENCES users(id) ON DELETE CASCADE,
   message_text TEXT NOT NULL,
   is_read BOOLEAN DEFAULT FALSE, -- Crucial para notificações
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Notificações (criada após messages para permitir referência a messages(id))
+CREATE TABLE IF NOT EXISTS notifications (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  actor_id INT REFERENCES users(id) ON DELETE CASCADE, -- Quem realizou a ação
+  type VARCHAR(50) NOT NULL, -- 'chat_message', 'match_created_friend', 'match_joined_friend'
+  reference_id INT, -- ID da partida ou relação relevante
+  message_id INT REFERENCES messages(id) ON DELETE CASCADE, -- Opcional, para notificações de chat
+  notification_text TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
